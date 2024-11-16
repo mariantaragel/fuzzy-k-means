@@ -15,17 +15,19 @@ class View(tk.Frame):
         self.create_graph()
 
     def create_graph(self):
-        self.fig = plt.figure(figsize=(7, 6), layout="tight")
+        self.fig = plt.figure()
         self.ax = self.fig.subplots()
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
+        self.clear_graph()
+        self.ax.spines[:].set_visible(False)
+        self.canvas.get_tk_widget().pack()
+
+    def clear_graph(self):
+        self.ax.clear()
         self.ax.set(
-            ylim=(0, 11),
-            xlim=(0, 11),
             xticks=[],
             yticks=[]
         )
-        self.ax.spines[:].set_visible(False)
-        self.canvas.get_tk_widget().pack()
 
     def create_buttons(self):
         self.top_frame = tk.Frame(self.root)
@@ -48,41 +50,34 @@ class View(tk.Frame):
         self.b1 = tk.Button(self.top_frame, text="Init", command=self.controller.init)
         self.b1.grid(row=0, column=2)
         
-        self.b2 = tk.Button(self.top_frame, text="Fuzzy Step", command=self.controller.step)
+        self.b2 = tk.Button(self.top_frame, text="Step", command=self.controller.step)
         self.b2.grid(row=0, column=3)
+
+        self.radvar = tk.StringVar()
         
-        self.b4 = tk.Button(self.top_frame, text="Step KMeans", command=self.controller.kmeans)
-        self.b4.grid(row=0, column=4)
+        self.r1 = tk.Radiobutton(self.top_frame, text="Fuzzy", variable=self.radvar, value="fuzzy", command=self.controller.init)
+        self.r1.grid(row=0, column=4)
         
+        self.r2 = tk.Radiobutton(self.top_frame, text="K-means", variable=self.radvar, value="k-means", command=self.controller.init)
+        self.r2.grid(row=0, column=5)
+
+        self.radvar.set("fuzzy")
+
         self.top_frame.pack()
 
     def draw_points(self, x, y):
-        self.ax.clear()
-        self.ax.set(
-            ylim=(0, 11),
-            xlim=(0, 11),
-            xticks=[],
-            yticks=[]
-        )
-
-        self.ax.scatter(x, y, color="black")
-
+        self.clear_graph()
+        self.ax.scatter(x, y, color="black", alpha=0.3)
         self.canvas.draw()
 
     def draw_points_in_clusters(self, x, y, clusters, centroids=None):
-        self.ax.clear()
-        self.ax.set(
-            ylim=(0, 11),
-            xlim=(0, 11),
-            xticks=[],
-            yticks=[]
-        )
+        self.clear_graph()
 
         for c in np.unique(clusters):
             cluster = np.argwhere(clusters == c)
             cluster_x = x[cluster]
             cluster_y = y[cluster]
-            self.ax.scatter(cluster_x, cluster_y)
+            self.ax.scatter(cluster_x, cluster_y, alpha=0.3)
         if centroids is not None:
             self.ax.scatter(centroids.T[0], centroids.T[1], color="black", marker="x")
 
@@ -90,8 +85,6 @@ class View(tk.Frame):
 
     def draw_centroids(self, x, y, color=None):
         self.ax.set(
-            ylim=(0, 11),
-            xlim=(0, 11),
             xticks=[],
             yticks=[]
         )

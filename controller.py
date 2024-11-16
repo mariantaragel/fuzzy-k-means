@@ -1,4 +1,3 @@
-import numpy as np
 from kmeans import KMeans
 from fuzzykmeans import FuzzyKMeans
 
@@ -15,9 +14,16 @@ class Controller:
         self.fkm = FuzzyKMeans(train_data=self.model.train_data, k_clusters=self.model.k_clusters, q=self.model.q)
         self.km = KMeans(train_data=self.model.train_data, k_clusters=self.model.k_clusters)
 
+        self.view.b2["state"] = "active"
         self.view.draw_points(self.model.datax, self.model.datay)
 
     def step(self):
+        if self.view.radvar.get() == "fuzzy":
+            self.fuzzy_step()
+        elif self.view.radvar.get() == "k-means":
+            self.kmeans_step()
+
+    def fuzzy_step(self):
         if not self.fkm.initialized:
             clusters = self.fkm.init()
             self.view.draw_points_in_clusters(self.model.datax, self.model.datay, clusters)
@@ -26,9 +32,9 @@ class Controller:
             self.view.draw_points_in_clusters(self.model.datax, self.model.datay, clusters, centroids)
 
         if self.fkm.finished:
-            print("Finished!")
+            self.view.b2["state"] = "disabled"
 
-    def kmeans(self):
+    def kmeans_step(self):
         if self.km.initialized == False:
             centroids = self.km.init()
             self.view.draw_centroids(centroids.T[0], centroids.T[1], "red")
@@ -37,4 +43,4 @@ class Controller:
             self.view.draw_points_in_clusters(self.model.datax, self.model.datay, clusters, centroids)
 
         if self.km.finished:
-            print("Finished!")
+            self.view.b2["state"] = "disabled"

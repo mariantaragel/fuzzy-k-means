@@ -58,35 +58,28 @@ class FuzzyKMeans:
         memberships = []
         clusters = []
 
-        for i in range(self.N):
-            mshp = []
-            for j in range(self.k_clusters):
-                res = 0
-                for k in range(self.k_clusters):
-                    dist_up = self._distance(self.train_data[i], self.centroids[j])
-                    dist_down = self._distance(self.train_data[i], self.centroids[k])
-                    if dist_down == 0:
-                        dist_down += SMALL_VALUE
-                    res += ((dist_up / dist_down) ** (2 / (self.q - 1)))
-                res = 1 / res
-                mshp.append(res)
-            
-            mshp = np.round(mshp, 2)
-            if sum(mshp) > 1.0:
-                mshp[-1] -= SMALL_VALUE
-            if sum(mshp) < 1.0:
-                mshp[-1] += SMALL_VALUE
+        distances = self._distances(self.train_data, self.centroids) ** (2 / (self.q - 1))
 
-            index = np.argmax(mshp)
-            clusters.append(index)
-            memberships.append(mshp)
+        for i in distances[:, None]:
+            for j in i:
+                if (j == 0).any():
+                    j += SMALL_VALUE
+                degrees = np.round(1 / np.sum(i.T / j, axis=1), 2)
+                if sum(degrees) > 1.0:
+                    degrees[-1] -= SMALL_VALUE
+                if sum(degrees) < 1.0:
+                    degrees[-1] += SMALL_VALUE
+
+                index = np.argmax(degrees)
+                clusters.append(index)
+                memberships.append(degrees)
+
 
         self.memberships = np.array(memberships)
         return np.array(clusters)
 
-    def _distance(self, x, c):
-        return np.sqrt(np.sum((x - c) ** 2))
-
+    def _distances(self, X, C):
+        return np.sqrt(np.einsum("ijk->ij", ((X[:, None, :] - C) ** 2)))
 
 if __name__ == "__main__":
     k_clusters = 3
