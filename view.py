@@ -41,7 +41,7 @@ class View(tk.Frame):
         self.e1.insert(tk.END,"5")
         self.e1.grid(row=0, column=1)
 
-        self.l2 = tk.Label(self.top_frame, text="Fuzzyness:")
+        self.l2 = tk.Label(self.top_frame, text="Fuzziness:")
         self.l2.grid(row=1, column=0)
 
         self.e2 = tk.Entry(self.top_frame, width=5)
