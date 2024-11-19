@@ -9,11 +9,8 @@ class Model:
     k_clusters = 3
     q = 2.0
 
-    def __init__(self):
-        self.load_data("s1.txt")
+    def load_data(self, filename):
+        df = pd.read_csv(filename, sep=r"\s+", header=None, engine="python")
+        self.train_data = df.to_numpy()
         self.datax = self.train_data.T[0]
         self.datay = self.train_data.T[1]
-
-    def load_data(self, filename):
-        df = pd.read_csv(filename, sep="    ", header=None, engine="python")
-        self.train_data = df.to_numpy()

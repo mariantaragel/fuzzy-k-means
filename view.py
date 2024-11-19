@@ -1,5 +1,6 @@
 import numpy as np
 import tkinter as tk
+import tkinter.ttk as ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -10,7 +11,7 @@ class View(tk.Frame):
         self.root = root
         self.controller = controller
         self.root.title("Fuzzy k-means")
-        self.root.geometry("700x600")
+        self.root.geometry("600x500")
         self.create_buttons()
         self.create_graph()
 
@@ -37,7 +38,7 @@ class View(tk.Frame):
 
         vcmd = (self.register(self.callback))
         self.e1 = tk.Entry(self.top_frame, validate="all", validatecommand=(vcmd, "%P"), width=5)
-        self.e1.insert(tk.END,"3")
+        self.e1.insert(tk.END,"5")
         self.e1.grid(row=0, column=1)
 
         self.l2 = tk.Label(self.top_frame, text="Fuzzyness:")
@@ -46,6 +47,9 @@ class View(tk.Frame):
         self.e2 = tk.Entry(self.top_frame, width=5)
         self.e2.insert(tk.END,"2.0")
         self.e2.grid(row=1, column=1)
+
+        self.l2 = tk.Label(self.top_frame, text="Dataset:")
+        self.l2.grid(row=2, column=0)
         
         self.b1 = tk.Button(self.top_frame, text="Init", command=self.controller.init)
         self.b1.grid(row=0, column=2)
@@ -61,8 +65,11 @@ class View(tk.Frame):
         self.r2 = tk.Radiobutton(self.top_frame, text="K-means", variable=self.radvar, value="k-means", command=self.controller.init)
         self.r2.grid(row=0, column=5)
 
-        self.radvar.set("fuzzy")
+        self.c1 = ttk.Combobox(self.top_frame, values=["default", "s1", "s2", "s3", "s4", "a1", "unbalance"], width=10, justify="center", state="readonly", )
+        self.c1.grid(row=2, column=1)
+        self.c1.set("default")
 
+        self.radvar.set("fuzzy")
         self.top_frame.pack()
 
     def draw_points(self, x, y):
@@ -115,5 +122,13 @@ class View(tk.Frame):
             out = float(self.e2.get())
         except Exception:
             return 2.0
+        
+        return out
+    
+    def get_dataset(self):
+        try:
+            out = "data/" + self.c1.get() + ".txt"
+        except Exception:
+            return "s1.txt"
         
         return out

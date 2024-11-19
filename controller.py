@@ -10,6 +10,7 @@ class Controller:
     def init(self):
         self.model.k_clusters = self.view.get_k_clusters()
         self.model.q = self.view.get_q()
+        self.model.load_data(self.view.get_dataset())
         
         self.fkm = FuzzyKMeans(train_data=self.model.train_data, k_clusters=self.model.k_clusters, q=self.model.q)
         self.km = KMeans(train_data=self.model.train_data, k_clusters=self.model.k_clusters)
