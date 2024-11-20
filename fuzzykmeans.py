@@ -1,6 +1,6 @@
 import numpy as np
 
-SMALL_VALUE = 0.01
+SMALL_VALUE = 0.001
 
 class FuzzyKMeans:
 
@@ -21,11 +21,7 @@ class FuzzyKMeans:
         for n in range(self.N):
             degrees = (np.random.uniform(0.0, 1.0, self.k_clusters))
             s = sum(degrees)
-            degrees = np.round(degrees / s, 2)
-            if sum(degrees) > 1.0:
-                degrees[-1] -= SMALL_VALUE
-            if sum(degrees) < 1.0:
-                degrees[-1] += SMALL_VALUE
+            degrees = degrees / s
             
             index = np.argmax(degrees)
             clusters.append(index)
@@ -46,8 +42,9 @@ class FuzzyKMeans:
             new_centroids.append(centroid)
         
         new_centroids = np.array(new_centroids)
-        if np.equal(self.centroids, new_centroids).all():
-            self.finished = True
+        if self.centroids is not None:
+            if (abs(self.centroids - new_centroids) < SMALL_VALUE).all():
+                self.finished = True
 
         self.centroids = new_centroids
 
@@ -64,11 +61,7 @@ class FuzzyKMeans:
             for j in i:
                 if (j == 0).any():
                     j += SMALL_VALUE
-                degrees = np.round(1 / np.sum(i.T / j, axis=1), 2)
-                if sum(degrees) > 1.0:
-                    degrees[-1] -= SMALL_VALUE
-                if sum(degrees) < 1.0:
-                    degrees[-1] += SMALL_VALUE
+                degrees = 1 / np.sum(i.T / j, axis=1)
 
                 index = np.argmax(degrees)
                 clusters.append(index)

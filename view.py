@@ -112,15 +112,27 @@ class View(tk.Frame):
     def get_k_clusters(self):
         try:
             out = int(self.e1.get())
+            if out > 32:
+                print("Warning: Maximum number of clusters is 32")
+                self.e1.delete(0, tk.END)
+                self.e1.insert(tk.END, "5")
         except Exception:
-            return 3
+            self.e1.delete(0, tk.END)
+            self.e1.insert(tk.END, "5")
+            return 5
 
         return out
     
     def get_q(self):
         try:
             out = float(self.e2.get())
+            if out <= 1.0:
+                print("Warning: Fuzziness must be in interval (1, +inf)")
+                self.e2.delete(0, tk.END)
+                self.e2.insert(tk.END, "2.0")
         except Exception:
+            self.e2.delete(0, tk.END)
+            self.e2.insert(tk.END, "2.0")
             return 2.0
         
         return out

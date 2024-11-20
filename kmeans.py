@@ -1,5 +1,7 @@
 import numpy as np
 
+SMALL_VALUE = 0.001
+
 class KMeans:
     
     initialized = False
@@ -44,8 +46,9 @@ class KMeans:
             new_centroids.append(new_centroid)
         
         new_centroids = np.array(new_centroids)
-        if np.equal(self.centroids, new_centroids).all():
-            self.finished = True
+        if self.centroids is not None:
+            if (abs(self.centroids - new_centroids) < SMALL_VALUE).all():
+                self.finished = True
 
         self.centroids = new_centroids
 

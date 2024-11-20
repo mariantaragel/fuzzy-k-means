@@ -33,6 +33,8 @@ class Controller:
             self.view.draw_points_in_clusters(self.model.datax, self.model.datay, clusters, centroids)
 
         if self.fkm.finished:
+            print("FKM: Finished")
+            print("FKM: Centroids are \n", self.fkm.centroids)
             self.view.b2["state"] = "disabled"
 
     def kmeans_step(self):
@@ -44,4 +46,6 @@ class Controller:
             self.view.draw_points_in_clusters(self.model.datax, self.model.datay, clusters, centroids)
 
         if self.km.finished:
+            print("KM: Finished")
+            print("KM: Centroids are \n", self.km.centroids)
             self.view.b2["state"] = "disabled"
