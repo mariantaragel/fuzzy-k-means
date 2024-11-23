@@ -3,11 +3,21 @@ import pandas as pd
 
 class Model:
 
-    train_data = np.array([[1, 2], [1, 4], [1, 1],
-                  [8, 5], [8, 6], [8, 3],
-                  [10, 8], [10, 6], [10, 10]])
-    k_clusters = 3
+    k_clusters = 5
     q = 2.0
+
+    def __init__(self):
+        means = np.array([[2, 1], [3, 15], [9, 10], [16, 1], [20, 22]])
+        covs = np.array([[[4, 0], [0, 1]], [[1, 0], [0, 2]], [[1, 0.8], [0.8, 1]], [[1, -0.3], [-0.3, 1]], [[1, 0.3], [0.3, 2]]])
+
+        clusters = []
+        for i in range(self.k_clusters):
+            cluster = np.random.multivariate_normal(means[i], covs[i], 100)
+            clusters.append(cluster)
+
+        self.train_data = np.concatenate(clusters)
+        self.datax = self.train_data.T[0]
+        self.datay = self.train_data.T[1]
 
     def load_data(self, filename):
         df = pd.read_csv(filename, sep=r"\s+", header=None, engine="python")
