@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt-get install python-tk
-sudo apt install python3-venv
+sudo apt install python3.12-venv
 
 python3 -m venv sfc
 . sfc/bin/activate
