@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt-get install python-tk
+sudo apt-get install python3-tk
 sudo apt install python3.12-venv
 
 python3 -m venv sfc
