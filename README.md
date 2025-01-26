@@ -1,1 +1,2 @@
-# fuzzy-k-means
+# Fuzzy k-means
+Simple implementation of fuzzy clustering app with GUI written in Python.
